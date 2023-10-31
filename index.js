@@ -29,19 +29,17 @@ app.get('/', (req, res) => {
 });
 
 app.post('/place-order', (req, res) => {
-    console.log(req.body);
-
     const merch_tx_id = uniqid();
 
     const normalPayLoad = {
       "merchantId": process.env.ID,
       "merchantTransactionId": merch_tx_id,
       "merchantUserId": "KKNURSERIES",
-      "amount": req.body.body.price,
+      "amount": req.body.price,
       "redirectUrl": "https://kknurseries-phonepe.vercel.app/callback/",
       "redirectMode": "POST",
       "callbackUrl": "https://kknurseries-phonepe.vercel.app/callback/",
-      "mobileNumber": req.body.body.phone,
+      "mobileNumber": req.body.phone,
       "paymentInstrument": {
         "type": "PAY_PAGE"
       }
@@ -59,7 +57,8 @@ app.post('/place-order', (req, res) => {
     headers: {
       'Content-Type': 'application/json',
       'X-VERIFY': checksum,
-      'accept': 'application/json'
+      'accept': 'application/json',
+      'Access-Control-Allow-Origin': '*'
     }
     })
     .then(function (response) {
