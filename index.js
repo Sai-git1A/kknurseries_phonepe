@@ -46,7 +46,7 @@ app.post('/place-order', (req, res) => {
     const sha256_val = sha256(string);
     const checksum = sha256_val + '###' + 1;
 
-    fetch('https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', {
+    fetch('https://api.phonepe.com/apis/hermes/pg/v1/pay', {
       method: 'POST',
       mode: 'no-cors',
       headers: {
@@ -65,7 +65,7 @@ app.post('/place-order', (req, res) => {
 app.post('/callback', (req, res) => {
   if (req.body.code == 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
     if (req.body.transactionId) {
-      const surl = `https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/${process.env.ID}/` + req.body.transactionId;
+      const surl = `https://api.phonepe.com/apis/hermes/pg/v1/status/${process.env.ID}/` + req.body.transactionId;
       
       const string = `/pg/v1/status/${process.env.ID}/` + req.body.transactionId + process.env.KEY;
       
