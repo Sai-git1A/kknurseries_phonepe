@@ -4,7 +4,6 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
-const axios = require('axios');
 const sha256 = require('sha256');
 const uniqid = require('uniqid');
 
@@ -12,11 +11,7 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors({
-  origin: '*',
-  method: ['GET', 'POST'],
-  credentials: true
-}));
+app.use(cors());
 
 mongoose.set('strictQuery', false);
 // mongoose.connect(process.env.MONGOURL);
@@ -51,19 +46,20 @@ app.post('/place-order', (req, res) => {
     const sha256_val = sha256(string);
     const checksum = sha256_val + '###' + 1;
 
-    axios.post('https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', {
-    'request': base64String
-    }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'X-VERIFY': checksum,
-      'accept': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    }
+    fetch('https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-VERIFY': checksum,
+        'accept': 'application/json',
+      },
+      body: JSON.stringify({
+        request: base64String
+      })
     })
-    .then(function (response) {
-      res.redirect(response.data.data.instrumentResponse.redirectInfo.url);
-    })
+    .then(response => response.json())
+    .then(data => res.send({getURL: data.data.instrumentResponse.redirectInfo.url}))
 });
 
 app.post('/callback', (req, res) => {
@@ -76,15 +72,18 @@ app.post('/callback', (req, res) => {
       const sha256_val = sha256(string);
       const checksum = sha256_val + '###' + 1;
       
-      axios.get(surl, {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-VERIFY': checksum,
-          'X-MERCHANT-ID': req.body.transactionId,
-          'accept': 'application/json'
-        }
-      })
-      .then(response => res.send(response.data))
+      fetch(surl, {
+      method: 'GET',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-VERIFY': checksum,
+        'X-MERCHANT-ID': req.body.transactionId,
+        'accept': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => res.send({result: data}))
     }
   }
 });
