@@ -44,7 +44,7 @@ app.post('/place-order', (req, res) => {
     const base64String = bufferObj.toString("base64");
     const string = base64String + '/pg/v1/pay' + process.env.KEY;
     const sha256_val = sha256(string);
-    const checksum = sha256_val + '###' + 1;
+    const checksum = sha256_val + '###' + 2;
 
     fetch('https://api.phonepe.com/apis/hermes/pg/v1/pay', {
       method: 'POST',
@@ -70,7 +70,7 @@ app.post('/callback', (req, res) => {
       const string = `/pg/v1/status/${process.env.ID}/` + req.body.transactionId + process.env.KEY;
       
       const sha256_val = sha256(string);
-      const checksum = sha256_val + '###' + 1;
+      const checksum = sha256_val + '###' + 2;
       
       fetch(surl, {
       method: 'GET',
