@@ -59,7 +59,7 @@ app.post('/place-order', (req, res) => {
       })
     })
     .then(response => response.json())
-    .then(data => res.send({getURL: data.data.instrumentResponse.redirectInfo.url}))
+    .then(data => res.send({result: data}))
 });
 
 app.post('/callback', (req, res) => {
