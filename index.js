@@ -102,7 +102,7 @@ app.post('/callback', (req, res) => {
         'accept': 'application/json',
       }
     })
-    .then(response => res.send(JSON.stringify(response.data)))
+    .then(response => console.log(JSON.stringify(response.data)))
     } else {
       res.send('ID not found');
     }
