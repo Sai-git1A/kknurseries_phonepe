@@ -107,7 +107,7 @@ app.post('/callback', (req, res) => {
       res.send('ID not found');
     }
   } else {
-    res.send('Payment Failed!');
+    res.send(req.body);
   }
 });
 
