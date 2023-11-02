@@ -26,6 +26,19 @@ mongoose.connection.on('connected', () => {
   console.log('database connected');
 });
 
+const paymentStatus = new schema({
+  name: String,
+  email: String,
+  phone: Number,
+  address: String,
+  amount: Number,
+  order_id: String,
+  pay_status: String,
+  pay_type: String
+});
+
+const Payment = mongoose.model('Payment', paymentStatus);
+
 app.get('/', (req, res) => {
     res.send('Server running Successfully!');
 });
@@ -103,7 +116,19 @@ app.post('/callback', (req, res) => {
       res.send('ID not found');
     }
   } else {
-    res.send(req.body);
+    const newPayment = new Payment({
+      name: user_data.name,
+      email: user_data.email,
+      phone: user_data.phone,
+      address: user_data.address,
+      amount: user_data.price,
+      order_id: req.body.merchantTransactionId,
+      pay_status: req.body.code,
+      pay_type: 'Null'
+    });
+    newPayment.save(() => {
+      res.redirect(`https://kknurseries.com/checkout-result/${user_data.name}/${req.body.merchantTransactionId}`)
+    });
   }
 });
 
