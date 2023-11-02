@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 const sha256 = require('sha256');
-const uniq_id = require('uniqid');
 
 const app = express();
 let user_data = {
@@ -14,8 +13,7 @@ let user_data = {
   'amount': 0,
   'order_id':'',
   'address': '',
-  'phone': '',
-  'tx_id': ''
+  'phone': ''
 }
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,21 +32,18 @@ app.get('/', (req, res) => {
 
 app.post('/place-order', (req, res) => {
 
-  const tx_id = uniq_id()
-
   user_data = {
     'name': req.body.name,
     'email': req.body.email,
     'amount': req.body.price,
     'order_id': req.body.orderId,
     'address': req.body.address,
-    'phone': req.body.phone,
-    'tx_id': tx_id
+    'phone': req.body.phone
   }
 
   const normalPayLoad = {
     "merchantId": process.env.ID,
-    "merchantTransactionId": tx_id,
+    "merchantTransactionId": req.body.orderId,
     "merchantUserId": "KKNURSERIES",
     "amount": req.body.price,
     "redirectUrl": "https://kknurseries-phonepe.vercel.app/callback/",
@@ -102,7 +97,7 @@ app.post('/callback', (req, res) => {
         'accept': 'application/json',
       }
     })
-    .then(response => console.log(JSON.stringify(response.data)))
+    .then(response => res.send(JSON.stringify(response.data)))
     } else {
       res.send('ID not found');
     }
