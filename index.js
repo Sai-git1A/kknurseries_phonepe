@@ -84,7 +84,7 @@ app.post('/place-order', (req, res) => {
 
 app.post('/callback', (req, res) => {
   if (req.body.code == 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
-    if (req.body.transactionId == user_data.tx_id && req.body.merchantId == process.env.ID && req.body.amount == user_data.price) {
+    if (req.body.merchantId == process.env.ID) {
       const surl = `https://api.phonepe.com/apis/hermes/pg/v1/status/${process.env.ID}/` + req.body.transactionId;
       
       const string = `/pg/v1/status/${process.env.ID}/` + req.body.transactionId + process.env.KEY;
@@ -103,6 +103,8 @@ app.post('/callback', (req, res) => {
       }
     })
     .then(response => res.send(JSON.stringify(response.data)))
+    } else {
+      res.send('ID not found');
     }
   } else {
     res.send('Payment Failed!');
