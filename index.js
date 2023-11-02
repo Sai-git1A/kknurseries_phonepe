@@ -80,7 +80,7 @@ app.post('/place-order', (req, res) => {
 app.post('/callback', (req, res) => {
   if (req.body.code == 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
     if (req.body.merchantId == process.env.ID) {
-      const surl = `https://api.phonepe.com/apis/hermes/pg/v1/status/${process.env.ID}/` + req.body.transactionId;
+      const surl = `https://api.phonepe.com/apis/hermes/pg/v1/status/${req.body.merchantId}/` + req.body.transactionId;
       
       const string = `/pg/v1/status/${process.env.ID}/` + req.body.transactionId + process.env.KEY;
       
@@ -93,7 +93,7 @@ app.post('/callback', (req, res) => {
       headers: {
         'Content-Type': 'application/json',
         'X-VERIFY': checksum,
-        'X-MERCHANT-ID': req.body.transactionId,
+        'X-MERCHANT-ID': req.body.merchantId,
         'accept': 'application/json',
       }
     })
