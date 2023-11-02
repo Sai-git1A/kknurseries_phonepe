@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 const sha256 = require('sha256');
+const uniq_id = require('uniqid');
 
 const app = express();
 let user_data = {
@@ -13,7 +14,8 @@ let user_data = {
   'amount': 0,
   'order_id':'',
   'address': '',
-  'phone': ''
+  'phone': '',
+  'tx_id': ''
 }
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -32,18 +34,21 @@ app.get('/', (req, res) => {
 
 app.post('/place-order', (req, res) => {
 
+  const tx_id = uniq_id()
+
   user_data = {
     'name': req.body.name,
     'email': req.body.email,
     'amount': req.body.price,
     'order_id': req.body.orderId,
     'address': req.body.address,
-    'phone': req.body.phone
+    'phone': req.body.phone,
+    'tx_id': tx_id
   }
 
   const normalPayLoad = {
     "merchantId": process.env.ID,
-    "merchantTransactionId": req.body.orderId,
+    "merchantTransactionId": tx_id,
     "merchantUserId": "KKNURSERIES",
     "amount": req.body.price,
     "redirectUrl": "https://kknurseries-phonepe.vercel.app/callback/",
@@ -79,7 +84,7 @@ app.post('/place-order', (req, res) => {
 
 app.post('/callback', (req, res) => {
   if (req.body.code == 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
-    if (req.body.transactionId == user_data.order_id && req.body.merchantId == process.env.ID && req.body.amount == user_data.price) {
+    if (req.body.transactionId == user_data.tx_id && req.body.merchantId == process.env.ID && req.body.amount == user_data.price) {
       const surl = `https://api.phonepe.com/apis/hermes/pg/v1/status/${process.env.ID}/` + req.body.transactionId;
       
       const string = `/pg/v1/status/${process.env.ID}/` + req.body.transactionId + process.env.KEY;
