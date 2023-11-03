@@ -126,9 +126,13 @@ app.post('/callback', (req, res) => {
       pay_status: req.body.code,
       pay_type: 'Null'
     });
-    newPayment.save(() => {
-      res.redirect(`https://kknurseries.com/checkout-result/${user_data.name}/${req.body.merchantTransactionId}`)
-    });
+    newPayment.save()
+      .then(() => {
+      res.send('Data saved successfully');
+      })
+      .catch((error) => {
+        console.error('Failed to save data', error);
+      });
   }
 });
 
