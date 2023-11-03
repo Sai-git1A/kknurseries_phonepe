@@ -122,7 +122,7 @@ app.post('/callback', (req, res) => {
       phone: user_data.phone,
       address: user_data.address,
       amount: user_data.price,
-      order_id: req.body.merchantTransactionId,
+      order_id: user_data.order_id,
       pay_status: req.body.code,
       pay_type: 'Null'
     });
