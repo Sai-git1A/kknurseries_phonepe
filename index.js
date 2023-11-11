@@ -90,28 +90,53 @@ app.post('/place-order', (req, res) => {
   .then(data => res.send({result: data}))
 });
 
-app.post('/callback', (req, res) => {
-  if (req.body.code == 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
-    if (req.body.merchantId == process.env.ID) {
-      const surl = `https://api.phonepe.com/apis/hermes/pg/v1/status/${req.body.merchantId}/` + req.body.transactionId;
-      
-      const string = `/pg/v1/status/${process.env.ID}/` + req.body.transactionId + process.env.KEY;
-      
-      const sha256_val = sha256(string);
-      const checksum = sha256_val + '###' + 2;
-      
-      fetch(surl, {
-      method: 'GET',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-VERIFY': checksum,
-        'X-MERCHANT-ID': req.body.merchantId,
-        'accept': 'application/json',
+app.post('/callback', async (req, res) => {
+  try {
+    const bodyData = await req.body;
+
+    if (bodyData.code == 'PAYMENT_SUCCESS' && bodyData.merchantId && bodyData.transactionId && bodyData.providerReferenceId) {
+      if (bodyData.merchantId == process.env.ID) {
+        const surl = `https://api.phonepe.com/apis/hermes/pg/v1/status/${bodyData.merchantId}/` + bodyData.transactionId;
+        
+        const string = `/pg/v1/status/${process.env.ID}/` + bodyData.transactionId + process.env.KEY;
+        
+        const sha256_val = sha256(string);
+        const checksum = sha256_val + '###' + 2;
+        
+        fetch(surl, {
+        method: 'GET',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-VERIFY': checksum,
+          'X-MERCHANT-ID': bodyData.merchantId,
+          'accept': 'application/json',
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        const newPayment = new Payment({
+          name: user_data.name,
+          email: user_data.email,
+          phone: user_data.phone,
+          address: user_data.address,
+          amount: user_data.price,
+          order_id: user_data.order_id,
+          pay_status: data.code,
+          pay_type: data.data.paymentInstrument.type
+        });
+        newPayment.save()
+          .then(() => {
+            res.send('Data saved successfully');
+          })
+          .catch((error) => {
+            console.error('Failed to save data', error);
+          });
+      })
+      } else {
+        res.send('ID not found');
       }
-    })
-    .then(response => response.json())
-    .then(data => {
+    } else {
       const newPayment = new Payment({
         name: user_data.name,
         email: user_data.email,
@@ -119,38 +144,19 @@ app.post('/callback', (req, res) => {
         address: user_data.address,
         amount: user_data.price,
         order_id: user_data.order_id,
-        pay_status: data.code,
-        pay_type: data.data.paymentInstrument.type
+        pay_status: req.body.code,
+        pay_type: 'Null'
       });
       newPayment.save()
         .then(() => {
-          res.send('Data saved successfully');
+        res.send('Data saved successfully');
         })
         .catch((error) => {
           console.error('Failed to save data', error);
         });
-    })
-    } else {
-      res.send('ID not found');
     }
-  } else {
-    const newPayment = new Payment({
-      name: user_data.name,
-      email: user_data.email,
-      phone: user_data.phone,
-      address: user_data.address,
-      amount: user_data.price,
-      order_id: user_data.order_id,
-      pay_status: req.body.code,
-      pay_type: 'Null'
-    });
-    newPayment.save()
-      .then(() => {
-      res.send('Data saved successfully');
-      })
-      .catch((error) => {
-        console.error('Failed to save data', error);
-      });
+  } catch (error) {
+    res.send(error);
   }
 });
 
