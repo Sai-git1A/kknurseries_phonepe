@@ -13,7 +13,9 @@ let user_data = {
   'amount': 0,
   'order_id':'',
   'address': '',
-  'phone': ''
+  'phone': '',
+  'date': '',
+  'cartData': []
 }
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,7 +36,9 @@ const paymentStatus = new schema({
   amount: Number,
   order_id: String,
   pay_status: String,
-  pay_type: String
+  pay_type: String,
+  date: String,
+  cartDate: Array
 });
 
 const Payment = mongoose.model('Payment', paymentStatus);
@@ -51,7 +55,9 @@ app.post('/place-order', (req, res) => {
     'amount': req.body.price,
     'order_id': req.body.orderId,
     'address': req.body.address,
-    'phone': req.body.phone
+    'phone': req.body.phone,
+    'date': req.body.date,
+    'cartData': req.body.cartData
   }
 
   const normalPayLoad = {
@@ -122,6 +128,8 @@ app.post('/callback', async (req, res) => {
           address: user_data.address,
           amount: user_data.price,
           order_id: user_data.order_id,
+          date: user_data.date,
+          cartDate: user_data.cartData,
           pay_status: data.code,
           pay_type: data.data.paymentInstrument.type
         });
@@ -144,6 +152,8 @@ app.post('/callback', async (req, res) => {
         address: user_data.address,
         amount: user_data.price,
         order_id: user_data.order_id,
+        date: user_data.date,
+        cartDate: user_data.cartData,
         pay_status: req.body.code,
         pay_type: 'Null'
       });
