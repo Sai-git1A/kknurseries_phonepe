@@ -135,7 +135,7 @@ app.post('/callback', async (req, res) => {
         });
         newPayment.save()
           .then(() => {
-            res.send('Data saved successfully');
+            res.redirect('https://kknurseries.com/user');
           })
           .catch((error) => {
             console.error('Failed to save data', error);
@@ -159,7 +159,7 @@ app.post('/callback', async (req, res) => {
       });
       newPayment.save()
         .then(() => {
-        res.send('Data saved successfully');
+          res.redirect('https://kknurseries.com/user');
         })
         .catch((error) => {
           console.error('Failed to save data', error);
