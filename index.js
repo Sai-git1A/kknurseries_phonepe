@@ -54,7 +54,7 @@ app.get('/orders/:phone', (req, res) => {
     } else {
       res.send(data);
     }
-  });
+  }).exec();
 });
 
 app.post('/place-order', (req, res) => {
