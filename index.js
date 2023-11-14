@@ -48,13 +48,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/orders/:phone', (req, res) => {
-  Payment.find({phone: req.params.phone}, (err, data) => {
+  Payment.findOne({phone: req.params.phone}, (err, data) => {
     if(err) {
       res.send(err);
     } else {
       res.send(data);
     }
-  }).exec();
+  });
 });
 
 app.post('/place-order', (req, res) => {
