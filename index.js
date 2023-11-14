@@ -47,6 +47,16 @@ app.get('/', (req, res) => {
     res.send('Server running Successfully!');
 });
 
+app.get('/orders/:phone', (req, res) => {
+  Payment.find({phone: req.params.phone}, (err, data) => {
+    if(err) {
+      res.send(err);
+    } else {
+      res.send(data);
+    }
+  });
+});
+
 app.post('/place-order', (req, res) => {
 
   user_data = {
