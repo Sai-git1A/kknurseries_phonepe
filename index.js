@@ -41,7 +41,7 @@ const paymentStatus = new schema({
   cartDate: Array
 });
 
-const Payment = mongoose.model('Payment', paymentStatus, 'payment');
+const Payment = mongoose.model('Payments', paymentStatus, 'payments');
 
 app.get('/', (req, res) => {
     res.send('Server running Successfully!');
