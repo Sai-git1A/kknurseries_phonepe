@@ -41,29 +41,10 @@ const paymentStatus = new schema({
   cartDate: Array
 });
 
-const indoorSchema = new schema({
-  id: String,
-  img: String,
-  name: String,
-  price: Number,
-  stock: String,
-});
-
 const Payment = mongoose.model('Payment', paymentStatus);
-const IndoorPlants = mongoose.model('IndoorPlants', indoorSchema, 'indoor-plants');
 
 app.get('/', (req, res) => {
     res.send('Server running Successfully!');
-});
-
-app.get('/indoor-plants', (req, res) => {
-  IndoorPlants.find({}, (err, data) => {
-    if(err) {
-      res.send(err);
-    } else {
-      res.send(data);
-    }
-  });
 });
 
 app.post('/place-order', (req, res) => {
