@@ -56,8 +56,8 @@ app.get('/', (req, res) => {
     res.send('Server running Successfully!');
 });
 
-app.get('/orders', (req, res) => {
-  Orders.find({}, (err, data) => {
+app.get('/indoor-plants', (req, res) => {
+  IndoorPlants.find({}, (err, data) => {
     if(err) {
       res.send(err);
     } else {
