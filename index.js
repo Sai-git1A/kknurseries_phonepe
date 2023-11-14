@@ -48,14 +48,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/orders/:phone', (req, res) => {
-  res.send(req.params.phone)
-  // Payment.find({phone: req.params.phone}, (err, data) => {
-  //   if(err) {
-  //     res.send(err);
-  //   } else {
-  //     res.send(data);
-  //   }
-  // });
+  Payment.find({phone: req.params.phone}, (err, data) => {
+    if(err) {
+      res.send(err);
+    } else {
+      res.send(data);
+    }
+  });
 });
 
 app.post('/place-order', (req, res) => {
