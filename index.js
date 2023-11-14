@@ -41,22 +41,16 @@ const paymentStatus = new schema({
   cartDate: Array
 });
 
-const ordersSchema = new schema({
-  _id: String,
+const indoorSchema = new schema({
+  id: String,
+  img: String,
   name: String,
-  email: String,
-  phone: Number,
-  address: String,
-  amount: Number,
-  order_id: String,
-  pay_status: String,
-  pay_type: String,
-  date: String,
-  cartDate: Array
+  price: Number,
+  stock: String,
 });
 
 const Payment = mongoose.model('Payment', paymentStatus);
-const Orders = mongoose.model('Payments', ordersSchema, 'payments');
+const IndoorPlants = mongoose.model('IndoorPlants', indoorSchema, 'indoor-plants');
 
 app.get('/', (req, res) => {
     res.send('Server running Successfully!');
