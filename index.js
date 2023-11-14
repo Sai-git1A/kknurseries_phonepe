@@ -41,20 +41,21 @@ const paymentStatus = new schema({
   cartDate: Array
 });
 
-const Payment = mongoose.model('Payment', paymentStatus);
+const Payment = mongoose.model('Payment', paymentStatus, 'payment');
 
 app.get('/', (req, res) => {
     res.send('Server running Successfully!');
 });
 
 app.get('/orders/:phone', (req, res) => {
-  Payment.find({phone: req.params.phone}, (err, data) => {
-    if(err) {
-      res.send(err);
-    } else {
-      res.send(data);
-    }
-  });
+  res.send(req.params.phone)
+  // Payment.find({phone: req.params.phone}, (err, data) => {
+  //   if(err) {
+  //     res.send(err);
+  //   } else {
+  //     res.send(data);
+  //   }
+  // });
 });
 
 app.post('/place-order', (req, res) => {
