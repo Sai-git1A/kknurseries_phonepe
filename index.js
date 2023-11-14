@@ -47,8 +47,8 @@ app.get('/', (req, res) => {
     res.send('Server running Successfully!');
 });
 
-app.get('/orders/:phone', (req, res) => {
-  Payment.findOne({phone: req.params.phone}, (err, data) => {
+app.get('/orders/:name', (req, res) => {
+  Payment.findOne({name: req.params.name}, (err, data) => {
     if(err) {
       res.send(err);
     } else {
