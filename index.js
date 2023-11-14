@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
     res.send('Server running Successfully!');
 });
 
-app.get('/orders/:name', (req, res) => {
+app.get('/orders', (req, res) => {
   Payment.find({}, (err, data) => {
     if(err) {
       res.send(err);
