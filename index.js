@@ -41,14 +41,29 @@ const paymentStatus = new schema({
   cartDate: Array
 });
 
-const Payment = mongoose.model('Payments', paymentStatus, 'payments');
+const ordersSchema = new schema({
+  _id: String,
+  name: String,
+  email: String,
+  phone: Number,
+  address: String,
+  amount: Number,
+  order_id: String,
+  pay_status: String,
+  pay_type: String,
+  date: String,
+  cartDate: Array
+});
+
+const Payment = mongoose.model('Payment', paymentStatus);
+const Orders = mongoose.model('Payments', ordersSchema, 'payments');
 
 app.get('/', (req, res) => {
     res.send('Server running Successfully!');
 });
 
 app.get('/orders', (req, res) => {
-  Payment.find({}, (err, data) => {
+  Orders.find({}, (err, data) => {
     if(err) {
       res.send(err);
     } else {
