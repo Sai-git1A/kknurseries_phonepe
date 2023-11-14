@@ -48,7 +48,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/orders/:name', (req, res) => {
-  Payment.findOne({name: req.params.name}, (err, data) => {
+  Payment.find({}, (err, data) => {
     if(err) {
       res.send(err);
     } else {
