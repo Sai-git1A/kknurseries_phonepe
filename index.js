@@ -38,7 +38,7 @@ const paymentStatus = new schema({
   pay_status: String,
   pay_type: String,
   date: String,
-  cartDate: Array
+  cartData: Array
 });
 
 const Payment = mongoose.model('Payment', paymentStatus);
@@ -129,7 +129,7 @@ app.post('/callback', async (req, res) => {
           amount: user_data.price,
           order_id: user_data.order_id,
           date: user_data.date,
-          cartDate: user_data.cartData,
+          cartData: user_data.cartData,
           pay_status: data.code,
           pay_type: data.data.paymentInstrument.type
         });
@@ -153,7 +153,7 @@ app.post('/callback', async (req, res) => {
         amount: user_data.price,
         order_id: user_data.order_id,
         date: user_data.date,
-        cartDate: user_data.cartData,
+        cartData: user_data.cartData,
         pay_status: req.body.code,
         pay_type: 'Null'
       });
