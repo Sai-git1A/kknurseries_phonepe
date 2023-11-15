@@ -102,14 +102,14 @@ app.post('/callback', async (req, res) => {
 
     if (bodyData.code == 'PAYMENT_SUCCESS' && bodyData.merchantId && bodyData.transactionId && bodyData.providerReferenceId) {
       if (bodyData.merchantId == process.env.ID) {
-        const surl = `https://api.phonepe.com/apis/hermes/pg/v1/status/${bodyData.merchantId}/` + bodyData.transactionId;
+        const status_url = `https://api.phonepe.com/apis/hermes/pg/v1/status/${bodyData.merchantId}/` + bodyData.transactionId;
         
         const string = `/pg/v1/status/${process.env.ID}/` + bodyData.transactionId + process.env.KEY;
         
         const sha256_val = sha256(string);
         const checksum = sha256_val + '###' + 2;
         
-        fetch(surl, {
+        fetch(status_url, {
         method: 'GET',
         mode: 'no-cors',
         headers: {
