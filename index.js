@@ -121,7 +121,6 @@ app.post('/callback', async (req, res) => {
       })
       .then(response => response.json())
       .then(data => {
-        if (data.code !== null) {
           const newPayment = new Payment({
             name: user_data.name,
             email: user_data.email,
@@ -141,13 +140,11 @@ app.post('/callback', async (req, res) => {
             .catch((error) => {
               console.error('Failed to save data', error);
             });
-        }
       })
       } else {
         res.send('ID not found');
       }
     } else {
-      if (req.body.success === false) {
         const newPayment = new Payment({
           name: user_data.name,
           email: user_data.email,
@@ -167,7 +164,6 @@ app.post('/callback', async (req, res) => {
           .catch((error) => {
             console.error('Failed to save data', error);
           });
-      }
     }
   } catch (error) {
     res.send(error);
