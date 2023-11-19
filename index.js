@@ -121,6 +121,33 @@ app.post('/callback', async (req, res) => {
       })
       .then(response => response.json())
       .then(data => {
+        if (data.code !== null) {
+          const newPayment = new Payment({
+            name: user_data.name,
+            email: user_data.email,
+            phone: user_data.phone,
+            address: user_data.address,
+            amount: user_data.price,
+            order_id: user_data.order_id,
+            date: user_data.date,
+            cartData: user_data.cartData,
+            pay_status: data.code,
+            pay_type: data.data.paymentInstrument.type
+          });
+          newPayment.save()
+            .then(() => {
+              res.redirect('https://kknurseries.com/user');
+            })
+            .catch((error) => {
+              console.error('Failed to save data', error);
+            });
+        }
+      })
+      } else {
+        res.send('ID not found');
+      }
+    } else {
+      if (req.body.success === false) {
         const newPayment = new Payment({
           name: user_data.name,
           email: user_data.email,
@@ -130,8 +157,8 @@ app.post('/callback', async (req, res) => {
           order_id: user_data.order_id,
           date: user_data.date,
           cartData: user_data.cartData,
-          pay_status: data.code,
-          pay_type: data.data.paymentInstrument.type
+          pay_status: req.body.code,
+          pay_type: 'Null'
         });
         newPayment.save()
           .then(() => {
@@ -140,30 +167,7 @@ app.post('/callback', async (req, res) => {
           .catch((error) => {
             console.error('Failed to save data', error);
           });
-      })
-      } else {
-        res.send('ID not found');
       }
-    } else {
-      const newPayment = new Payment({
-        name: user_data.name,
-        email: user_data.email,
-        phone: user_data.phone,
-        address: user_data.address,
-        amount: user_data.price,
-        order_id: user_data.order_id,
-        date: user_data.date,
-        cartData: user_data.cartData,
-        pay_status: req.body.code,
-        pay_type: 'Null'
-      });
-      newPayment.save()
-        .then(() => {
-          res.redirect('https://kknurseries.com/user');
-        })
-        .catch((error) => {
-          console.error('Failed to save data', error);
-        });
     }
   } catch (error) {
     res.send(error);
